@@ -1,13 +1,9 @@
 from typing import Optional
 
-from abc import ABC, abstractmethod
+from abc import ABC
 
 
 class BaseApiClient(ABC):
-    def __init__(self, url, headers: Optional[dict] = None):
-        self.base_url = url
-        self.headers = headers
-
-    @abstractmethod
-    def get_request(self):
-        pass
+    def __init__(self) -> None:
+        self.base_url: str = 'url'
+        self.headers: Optional[dict] = None

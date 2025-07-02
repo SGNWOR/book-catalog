@@ -1,38 +1,31 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
+
+from src.library_catalog.models.books import CreateBook, SearchBook, UpdateBook
+from src.library_catalog.api.book_repository import JsonBinClient
 
 
-from src.library_catalog.models.books import CreateBook, SearchBook
-from src.library_catalog.api.book_repository import BookRepository
-
-
-db = BookRepository(
-    "https://api.jsonbin.io/v3/b/680a6d6f8561e97a5006babf",
-    {
-        "Content-Type": "application/json",
-        "X-Master-Key": "$2a$10$lPrsM6IMpw8D0PDQcnGT5ukGheZBJ4b0nCtRSQ/kOsgKpzR6iMoIG"
-        }
-)
+db = JsonBinClient()
 
 router = APIRouter(prefix='/books', tags=['books'])
 
 
-@router.get('/')
-async def get_books(filter: SearchBook = Depends()):
+@router.put('/')
+async def get_books_by_parameters(filter: SearchBook):
     return await db.get_filtered(filter)
 
 
 @router.get('/{id}')
-async def get_book(id: int):
+async def get_book_by_id(id: int):
     return await db.get_by_id(id)
 
 
-@router.post('/book')
-async def add_book(book: CreateBook):
+@router.post('/')
+async def create_book(book: CreateBook):
     return await db.post_request(book)
 
 
-@router.put('/detail/{id}')
-async def update_book(id: int, book: CreateBook):
+@router.put('/update/{id}')
+async def update_book(id: int, book: UpdateBook):
     return await db.update_request(book, id)
 
 
